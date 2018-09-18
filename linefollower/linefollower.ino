@@ -1,12 +1,3 @@
-#define WHITE_VAL_KIRI 25
-#define BLACK_VAL_KIRI 40
-#define PWM_SPEED 120
-
-#define WHITE_VAL_KANAN 25
-#define BLACK_VAL_KANAN 51
-
-
-#define SENSOR_TENGAH_HITAM 110
 
 
 
@@ -14,42 +5,53 @@
   MOTOR 1 KANAN KE ARAH PINTU LAB
 */
 
-void motor_kanan_mundur() {
+int HITAM_VALUE_MID = 100;
+int PUTIH_VALUE_MID = 90;
+
+
+//motor Right OFF
+void mROFF() {
   digitalWrite(7, LOW);
   digitalWrite(5, LOW);
-  analogWrite(3, PWM_SPEED);
+  //  analogWrite(3, PWM_SPEED);
 
 }
-void motor_kanan_maju() {
+//motor Right ON
+void mRON(int PWM) {
   digitalWrite(7, HIGH);
   digitalWrite(5, LOW);
-  analogWrite(3, PWM_SPEED);
+  analogWrite(3, PWM);
 
 }
-
-void motor_kiri_maju() {
+//motor Left ON
+void mLON(int PWM) {
   digitalWrite(9, LOW);
   digitalWrite(11, HIGH);
-  analogWrite(13, PWM_SPEED);
+  analogWrite(13, PWM);
 
 }
 
-void motor_kiri_mundur() {
+//motor Left OFF
+void mLOFF() {
   digitalWrite(9, LOW);
   digitalWrite(11, LOW);
-  analogWrite(13, PWM_SPEED);
+  //  analogWrite(13, PWM);
 }
+int sensor[] = {A14, A12, A10, A8, A6, A4, A2, A0};
+int analogBuffer[] = {0, 0, 0, 0, 0, 0, 0, 0};
+int digitalBuffer[] = {0, 0, 0, 0, 0, 0, 0, 0};
+int prevState[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 void setup() {
   pinMode(A0, INPUT); // Sensor kanan 4 (paling kanan)
   pinMode(A2, INPUT); //sensor kanan 3
   pinMode(A4, INPUT); //Sensor Kanan 2
-  pinMode(A6, INPUT); //sensor kanan 1
+  pinMode(A6, INPUT); //sensor kanan 1 (Tengah)
 
-  pinMode(A8, INPUT); //sensor kiri 1
+  pinMode(A8, INPUT); //sensor kiri 1(Tengah)
   pinMode(A10, INPUT); //sensor kiri 2
   pinMode(A12, INPUT); //sensor kiri 3
-  pinMode(A14, INPUT); //sensor kiri 1
+  pinMode(A14, INPUT); //sensor kiri 4
   Serial.begin(9600);
 
 
@@ -66,72 +68,105 @@ void setup() {
   pinMode(11, OUTPUT); //motor 2 mundur
   pinMode(13, OUTPUT); //PWM SIGNAL MOTOR 2
 }
-int motor_kiri[] = {A10, A12, A14};
-int motor_kanan[] = {A0, A2, A4};
-int motor_tengah[] = {A6, A8};
-void loop() {
-  //  Serial.print("Sensor Kanan 1 : ");
-  //  Serial.println(analogRead(A0));
-  //  Serial.print("Sensor Kanan 2 : ");
-  //  Serial.println(analogRead(A2));
-  //  Serial.print("Sensor Kanan 3 : ");
-  //  Serial.println(analogRead(A4));
-  //  Serial.print("Sensor Kanan 4 : ");
-  //  Serial.println(analogRead(A6));
-  //  Serial.println(analogRead(A8));
 
-  //peripheral sensor kiri
-  int total_kiri = 0;
+//int motor_tengah[] = {A6, A8};
 
-  for (int x = 0; x < 3; x++) {
-    total_kiri += analogRead(motor_kiri[x]);
+void bacaSensor() {
+  for (int x = 0; x < 8; x++) {
+    analogBuffer[x] = analogRead(sensor[x]);
   }
-  total_kiri = total_kiri / 4;
-  //  Serial.println(total_kiri);
-
-  int total_kanan = 0;
-
-  for (int x = 0; x < 3; x++) {
-    total_kanan += analogRead(motor_kanan[x]);
-  }
-  total_kanan = total_kanan / 4;
-
-  int total_tengah = 0;
-  for (int x = 0; x < 2; x++) {
-    total_tengah += analogRead(motor_tengah[x]);
-  }
-  total_tengah = total_tengah / 2;
-  //  Serial.print("Sensor Kanan : ");
-  //  Serial.println(total_kanan);
-    Serial.print("Sensor Kiri : ");
-    Serial.println(total_kiri);
-//    Serial.print("Sensor Tengah : ");
-//    Serial.println(total_tengah);
-
-
-  int hasil = 0;
-  /*Sensor Tengah Hitam MOTOR 1-MOTOR 2 MAJU*/
-  if (total_tengah >= SENSOR_TENGAH_HITAM) {
-    hasil=99;
-    motor_kanan_maju();
-    motor_kiri_maju();
-  }
-  /*SENSOR KIRI*/
-  else if (total_kiri >= BLACK_VAL_KIRI && total_kanan <= WHITE_VAL_KANAN) {
-    hasil = 1;
-    motor_kanan_maju();
-    motor_kiri_mundur();
-  }
-  //SENSOR KANAN
-  else if (total_kiri <= BLACK_VAL_KANAN && total_kanan <= BLACK_VAL_KANAN ) {
-    hasil = 2;
-    motor_kanan_mundur();
-    motor_kiri_maju();
-  }
-  else if (total_kiri <= WHITE_VAL_KIRI && total_kanan <= WHITE_VAL_KANAN ) {
-    hasil = 3;
-    motor_kiri_mundur();
-    motor_kanan_mundur();
-  }
-  //  delay(100);
 }
+
+/*Debuggin Purposes*/
+void showSensor() {
+  Serial.print("Sensor Kiri 1 :"); //paling kiri
+  Serial.println(analogBuffer[0]);
+  Serial.print("Sensor Kiri 2 :");
+  Serial.println(analogBuffer[1]);
+  Serial.print("Sensor Kiri 3 :");
+  Serial.println(analogBuffer[2]);
+  Serial.print("Sensor Tengah Kiri :");
+  Serial.println(analogBuffer[3]);
+
+  Serial.print("Sensor Tengah Kanan :");
+  Serial.println(analogBuffer[4]);
+  Serial.print("Sensor Kanan 3 :");
+  Serial.println(analogBuffer[5]);
+  Serial.print("Sensor Kanan 2 :");
+  Serial.println(analogBuffer[6]);
+  Serial.print("Sensor Kanan 1 :");
+  Serial.println(analogBuffer[7]);
+
+}
+
+void digitalShow() {
+  for (int x = 0; x < 8; x++) {
+    Serial.print(digitalBuffer[x]);
+    Serial.print(" , ");
+  }
+  Serial.println();
+}
+
+void konversiDigital() {
+  for (int x = 0; x < 8; x++) {
+    if (analogBuffer[x] > 50) {
+      digitalBuffer[x] = 1;
+    } else {
+      digitalBuffer[x] = 0;
+    }
+  }
+}
+
+#define PWM_SIXTH 153
+#define PWM_FIFTH 128
+#define PWM_TWENTY 51
+#define PWM_FORTY 102
+
+void loop() {
+  bacaSensor();
+  konversiDigital();
+  //  showSensor();
+  //    digitalShow();
+  char buffer[16];
+  sprintf(buffer, "%d%d%d%d%d%d%d%d", digitalBuffer[0], digitalBuffer[1], digitalBuffer[2], digitalBuffer[3], digitalBuffer[4], digitalBuffer[5], digitalBuffer[6], digitalBuffer[7]);
+  String test = buffer;
+  Serial.println(test);
+  if (test == "00011000") {
+    mRON(PWM_SIXTH);
+    mLON(PWM_SIXTH);
+  }
+  else if (test == "11000000") {
+    mRON(PWM_FIFTH);
+    mLOFF();
+  }
+  else if (test == "01100000") {
+    mLON(PWM_FIFTH);
+    mRON(PWM_TWENTY);
+
+  }
+  else if (test == "00110000") {
+    mLON(PWM_FIFTH);
+    mRON(PWM_FORTY);
+
+  }
+  else if (test == "00000011") {
+    mLON(PWM_FIFTH);
+    mROFF();
+
+  }
+  else if (test == "00000110") {
+    mRON(PWM_TWENTY);
+    mLON(PWM_FIFTH);
+  }
+  else if (test == "00001100") {
+    mRON(PWM_FIFTH);
+    mLON(PWM_FORTY);
+  }
+  else if (test == "00000000") {
+    mROFF();
+    mLOFF();
+  }
+
+}
+
+
