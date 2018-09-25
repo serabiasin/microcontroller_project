@@ -1,14 +1,3 @@
-
-
-
-/*
-  MOTOR 1 KANAN KE ARAH PINTU LAB
-*/
-
-int HITAM_VALUE_MID = 100;
-int PUTIH_VALUE_MID = 90;
-
-
 //motor Right OFF
 void mROFF() {
   digitalWrite(7, LOW);
@@ -58,7 +47,6 @@ void setup() {
   /*
     MOTOR DRIVER :
     D3 D5 D7 D9 D11 D13
-
   */
   pinMode(3, OUTPUT); //PWM SIGNAL MOTOR 1
   pinMode(5, OUTPUT); //motor 1 mundur
@@ -107,9 +95,11 @@ void digitalShow() {
   Serial.println();
 }
 
+#define THRESHOLD 55
+
 void konversiDigital() {
   for (int x = 0; x < 8; x++) {
-    if (analogBuffer[x] > 50) {
+    if (analogBuffer[x] > THRESHOLD) {
       digitalBuffer[x] = 1;
     } else {
       digitalBuffer[x] = 0;
@@ -117,56 +107,131 @@ void konversiDigital() {
   }
 }
 
-#define PWM_SIXTH 153
-#define PWM_FIFTH 128
+#define PWM_SIXTY 153
+#define PWM_FIFTY 128
 #define PWM_TWENTY 51
 #define PWM_FORTY 102
+#define PWM_FIVE 13
+#define PWM_TEN 26
+#define PWM_FIFTEEN 38
+#define PWM_TFIVE 64
+#define PWM_THIRTY 77
+int error = 0;
+
 
 void loop() {
   bacaSensor();
   konversiDigital();
-  //  showSensor();
-  //    digitalShow();
+    showSensor();
+//  digitalShow();
   char buffer[16];
   sprintf(buffer, "%d%d%d%d%d%d%d%d", digitalBuffer[0], digitalBuffer[1], digitalBuffer[2], digitalBuffer[3], digitalBuffer[4], digitalBuffer[5], digitalBuffer[6], digitalBuffer[7]);
   String test = buffer;
-  Serial.println(test);
-  if (test == "00011000") {
-    mRON(PWM_SIXTH);
-    mLON(PWM_SIXTH);
-  }
-  else if (test == "11000000") {
-    mRON(PWM_FIFTH);
-    mLOFF();
-  }
-  else if (test == "01100000") {
-    mLON(PWM_FIFTH);
-    mRON(PWM_TWENTY);
+  //  Serial.println(test);
+//  kendali(test);
 
-  }
-  else if (test == "00110000") {
-    mLON(PWM_FIFTH);
-    mRON(PWM_FORTY);
-
-  }
-  else if (test == "00000011") {
-    mLON(PWM_FIFTH);
-    mROFF();
-
-  }
-  else if (test == "00000110") {
-    mRON(PWM_TWENTY);
-    mLON(PWM_FIFTH);
-  }
-  else if (test == "00001100") {
-    mRON(PWM_FIFTH);
-    mLON(PWM_FORTY);
-  }
-  else if (test == "00000000") {
-    mROFF();
-    mLOFF();
-  }
 
 }
 
+
+void kendali(String test) {
+
+  if (test == "10000000") {
+    error = -6;
+    mLON(PWM_FIFTY);
+    mROFF();
+  }
+  else if (test == "11000000") {
+    error = -5;
+    mLON(PWM_FIFTY);
+    mRON(PWM_FIVE);
+  }
+  else if (test == "01000000") {
+    error = -4;
+    mLON(PWM_FIFTY);
+    mRON(PWM_TEN);
+
+  }
+  else if (test == "01110000") {
+    error = -3;
+    mLON(PWM_FIFTY);
+    mRON(PWM_FIFTEEN);
+  }
+  else if (test == "01010000") {
+    error = -2;
+    mLON(PWM_FIFTY);
+    mRON(PWM_TWENTY);
+  }
+  else if (test == "00110000") {
+    error = -1;
+    mLON(PWM_FIFTY);
+    mRON(PWM_TFIVE);
+  }
+  else if (test == "00010000") {
+    error = 0;
+    mLON(PWM_FIFTY);
+    mRON(PWM_THIRTY);
+  }
+  else if (test == "00011000") {
+    error = 0;
+    mRON(PWM_SIXTY);
+    mLON(PWM_SIXTY);
+  }
+  else if (test == "00001000") {
+    error = 0;
+    mLON(PWM_THIRTY);
+    mRON(PWM_FIFTY);
+
+  }
+  else if (test == "00001100") {
+    error = 1;
+    mRON(PWM_FIFTY);
+    mLON(PWM_TFIVE);
+  }
+  else if (test == "00011100 ") {
+    error = 1;
+    mRON(PWM_FIFTY);
+    mLON(PWM_TFIVE);
+
+  }
+  else if (test == "00010100") {
+    error = 1;
+    mRON(PWM_FIFTY);
+    mLON(PWM_TFIVE);
+
+
+  }
+  else if (test == "00000100") {
+    error = 2;
+    mRON(PWM_FIFTY);
+    mLON(PWM_TWENTY);
+  }
+  else if (test == "00000110") {
+    error = 3;
+
+    mLON(PWM_FIFTY);
+    mRON(PWM_FIFTEEN);
+  }
+  else if (test == "00000010") {
+    error = 4;
+
+    mLON(PWM_FIFTY);
+    mRON(PWM_TEN);
+  }
+  else if (test == "00000011") {
+    error = 5;
+    mLON(PWM_FIVE);
+    mRON(PWM_FIFTY);
+  }
+  else if (test == "00000001") {
+    error = 6;
+    mLOFF();
+    mRON(PWM_FIFTY);
+  }
+  else if (test == "00000000") {
+    mLOFF();
+    mROFF();
+  }
+  Serial.println(error);
+}
 
