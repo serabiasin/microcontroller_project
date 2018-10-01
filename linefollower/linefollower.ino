@@ -98,7 +98,7 @@ void konversiDigital() {
 #define PWM_FIFTY 128
 #define PWM_TWENTY 51
 #define PWM_FORTY 102
-#define PWM_FULL PWM_FORTY+30
+#define PWM_FULL PWM_THIRTY+20
 #define PWM_FIVE 13
 #define PWM_TEN 26
 #define PWM_FIFTEEN 38
@@ -132,112 +132,181 @@ void kendali(String test) {
     error = 0;
     mRON(PWM_FULL);
     mLON(PWM_FULL);
-  }
-  else if (test == "00011100") {
-    error = 0;
-    mLON(PWM_FULL);
-    mRON(PWM_FULL - 20 );
-  }
-  else if (test == "00111000") {
-    error = 0;
-    mRON(PWM_FULL );
-    mLON(PWM_FULL-20);
-  }
-  else if (test == "00010100") {
-    error = 0;
-    mLON(PWM_FULL + 10);
-    mRON(PWM_THIRTY );
-  }
 
+  }
+  else if (test == "00000100") {
+    mLON(PWM_FULL+20);
+    mRON(PWM_THIRTY);
+  }
+  else if (test == "00010000") {
+    mLON(PWM_THIRTY);
+    mRON(PWM_FULL);
+  }
   else if (test == "00001000") {
     error = 0;
-    mLON(PWM_FORTY );
-    mRON(PWM_FORTY - 20);
+    mRON(PWM_FULL);
+    mLON(PWM_FULL+20);
+
   }
-  /*Skenario jika sensor kanan mendeteksi hitam*/
-  else if (test == "00000001") {
-    error = 6;
+  else if (test == "10000000") {
+    mLON(PWM_TEN);
+    mRON(PWM_FULL);
+
+  }
+  else if (test == "00100000") {
     mLON(PWM_TWENTY);
+    mRON(PWM_FULL);
+  }
+  else if(test=="00110000"){
+    mLON(PWM_FULL+20);
+    mRON(PWM_TWENTY);
+
+  }
+  else if (test == "00000110") {
+    mLON(PWM_FULL+20);
+    mRON(PWM_TWENTY);
+
+  }
+  else if (test == "00000100") {
+    mLON(PWM_FULL+20);
     mRON(PWM_TEN);
 
   }
-  else if (test == "00000010") {
-    error = 4;
-    mLON(PWM_FORTY);
-    mRON(PWM_TEN - 10);
-  }
-  else if (test == "00000100") {
-
-    error = 2;
-    mLON(PWM_FORTY);
-    mRON(PWM_TFIVE - 10);
-  }
-  else if (test == "00000110") {
-    error = 3;
-    mLON(PWM_FULL);
-    mRON(PWM_FIFTEEN - 10);
-  }
   else if (test == "00000011") {
-    error = 5;
-    mLON(PWM_FULL);
-    mRON(PWM_TEN + 40);
+    mLON(PWM_FIFTY+20);
+    mRON(PWM_THIRTY);
+
   }
-  else if (test == "00000111") {
-    error = 7;
-    mLON(PWM_FIFTY);
-    mRON(PWM_THIRTY - 10);
+  else if(test=="00000001"){
+    mLON(PWM_FULL+20);
+    mROFF();
+
   }
-  else if (test == "00001111") {
-    error = 6;
-    mLON(PWM_FULL);
-    mRON(PWM_TFIVE - 10);
-  }
-  else if (test == "00001100") {
-    error = 1;
-    mLON(PWM_FULL);
-    mRON(PWM_TFIVE);
-  }
-  /*Skenario jika sensor kiri mendeteksi hitam*/
-  else if (test == "10000000") {
-    error = -6;
-    mRON(PWM_TWENTY);
-    mLOFF();
-  }
-  else if (test == "01000000") {
-    error = -4;
-    mRON(PWM_FULL - 10);
-    mLON(PWM_TEN);
-  }
-  else if (test == "00100000") {
-    error = -2;
-    mRON(PWM_FULL - 10);
-    mLON(PWM_TWENTY);
-  }
-  else if (test == "11000000") {
-    error = -5;
-    mRON(PWM_FULL);
-    mLON(PWM_TWENTY);
-  }
-  else if (test == "01100000") {
-    error = -3;
-    mRON(PWM_FULL);
-    mLON(PWM_FIFTEEN);
-  }
-  else if (test == "11110000") {
-    error = -6;
-    mRON(PWM_FULL - 10);
-    mLON(PWM_TFIVE);
-  }
-  else if (test == "11100000") {
-    error = -6;
-    mRON(PWM_FORTY);
-    mLOFF();
-  }
+else if(test=="00000010"){
+    mLON(PWM_THIRTY+20);
+    mROFF();
+}
+else if(test=="00000111"){
+  mLON(PWM_FORTY);
+  mROFF();
+}
+
+
+
+
+
   /*Ketika putih*/
   else if (test == "00000000") {
     mLOFF();
     mROFF();
   }
+
+  //  if (test == "00011000") {
+  //    error = 0;
+  //    mRON(PWM_FULL);
+  //    mLON(PWM_FULL);
+  //  }
+  //  else if (test == "00011100") {
+  //    error = 0;
+  //    mLON(PWM_FULL);
+  //    mRON(PWM_FULL - 20 );
+  //  }
+  //  else if (test == "00111000") {
+  //    error = 0;
+  //    mRON(PWM_FULL );
+  //    mLON(PWM_FULL-20);
+  //  }
+  //  else if (test == "00010100") {
+  //    error = 0;
+  //    mLON(PWM_FULL + 10);
+  //    mRON(PWM_THIRTY );
+  //  }
+  //
+  //  else if (test == "00001000") {
+  //    error = 0;
+  //    mLON(PWM_FORTY );
+  //    mRON(PWM_FORTY - 20);
+  //  }
+  //  /*Skenario jika sensor kanan mendeteksi hitam*/
+  //  else if (test == "00000001") {
+  //    error = 6;
+  //    mLON(PWM_TWENTY);
+  //    mRON(PWM_TEN);
+  //
+  //  }
+  //  else if (test == "00000010") {
+  //    error = 4;
+  //    mLON(PWM_FORTY);
+  //    mRON(PWM_TEN - 10);
+  //  }
+  //  else if (test == "00000100") {
+  //
+  //    error = 2;
+  //    mLON(PWM_FORTY);
+  //    mRON(PWM_TFIVE - 10);
+  //  }
+  //  else if (test == "00000110") {
+  //    error = 3;
+  //    mLON(PWM_FULL);
+  //    mRON(PWM_FIFTEEN - 10);
+  //  }
+  //  else if (test == "00000011") {
+  //    error = 5;
+  //    mLON(PWM_FULL);
+  //    mRON(PWM_TEN + 40);
+  //  }
+  //  else if (test == "00000111") {
+  //    error = 7;
+  //    mLON(PWM_FIFTY);
+  //    mRON(PWM_THIRTY - 10);
+  //  }
+  //  else if (test == "00001111") {
+  //    error = 6;
+  //    mLON(PWM_FULL);
+  //    mRON(PWM_TFIVE - 10);
+  //  }
+  //  else if (test == "00001100") {
+  //    error = 1;
+  //    mLON(PWM_FULL);
+  //    mRON(PWM_TFIVE);
+  //  }
+  //  /*Skenario jika sensor kiri mendeteksi hitam*/
+  //  else if (test == "10000000") {
+  //    error = -6;
+  //    mRON(PWM_TWENTY);
+  //    mLOFF();
+  //  }
+  //  else if (test == "01000000") {
+  //    error = -4;
+  //    mRON(PWM_FULL - 10);
+  //    mLON(PWM_TEN);
+  //  }
+  //  else if (test == "00100000") {
+  //    error = -2;
+  //    mRON(PWM_FULL - 10);
+  //    mLON(PWM_TWENTY);
+  //  }
+  //  else if (test == "11000000") {
+  //    error = -5;
+  //    mRON(PWM_FULL);
+  //    mLON(PWM_TWENTY);
+  //  }
+  //  else if (test == "01100000") {
+  //    error = -3;
+  //    mRON(PWM_FULL);
+  //    mLON(PWM_FIFTEEN);
+  //  }
+  //  else if (test == "11110000") {
+  //    error = -6;
+  //    mRON(PWM_FULL - 10);
+  //    mLON(PWM_TFIVE);
+  //  }
+  //  else if (test == "11100000") {
+  //    error = -6;
+  //    mRON(PWM_FORTY);
+  //    mLOFF();
+  //  }
+
 
   Serial.println(error);
 }
