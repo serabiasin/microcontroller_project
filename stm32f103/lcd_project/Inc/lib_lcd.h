@@ -38,5 +38,8 @@ void beginLCD(LCD_DRIVER *this);
 
 /*MISC Features for LCD*/
 void sendcharTolcd(const char *string, LCD_DRIVER *this);
+
+/* IMPLEMENT SOON */
 void resetDisplay(LCD_DRIVER *this);
+void setPosition(uint8_t x, uint8_t y);
 #endif
