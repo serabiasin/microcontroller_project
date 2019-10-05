@@ -1,7 +1,7 @@
 #include "lib_lcd.h"
 
 #define CLEAR_DISPLAY 0x01
-#define LCD_16X2 0x0
+#define LCD_16X2 0x38
 #define LCD_16X1 0x0
 /**
  *  to do :
@@ -19,7 +19,9 @@
 
 void sendInstruction(uint16_t instruct, LCD_DRIVER *this) {
         HAL_Delay(50);
-        turnOn(&this->enPin);
+        turnOff(&this->rsPin);
+        turnOff(&this->rwPin);
+	turnOn(&this->enPin);
 
         splitBit(instruct, this);
 
@@ -37,7 +39,7 @@ void sendcharTolcd(const char *string, LCD_DRIVER *this) {
         turnOn(&this->rsPin);
         turnOff(&this->rwPin);
         while (*string != '\0') {
-                splitBit((uint8_t)*string, this);
+                splitBit(*string, this);
                 string++;
         }
         turnOff(&this->enPin);
@@ -111,14 +113,15 @@ void turnOff(PIN_PERIPHERAL *this) {
 
 void beginLCD(LCD_DRIVER *this) {
         HAL_Delay(100);
-        turnOff(&this->enPin); // set pin Enable high to firing data to LCD
-        turnOff(&this->rsPin);
-        turnOff(&this->rwPin);
-        // aktifkan function set, 1 baris saja
-        splitBit(0x30, this);
+       	// aktifkan function set, 1 baris saja
+	sendInstruction(LCD_16X2,this);
         // enable blink,cursor,dan display
-        splitBit(0x0F, this);
-        turnOn(&this->enPin);
-        // matikan enable agar data register aktif
-        turnOff(&this->enPin);
+       	sendInstruction(0x0F, this);
+	HAL_Delay(100);
+}
+
+void resetDisplay(LCD_DRIVER *this){
+	HAL_Delay(50);
+	sendInstruction(CLEAR_DISPLAY,this);
+	HAL_Delay(50);
 }
